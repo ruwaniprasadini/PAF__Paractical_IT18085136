@@ -107,5 +107,40 @@ public class Hospital {
 			}
 			return output;
 		}
+		//update Doctor
+		public String updateDoctor(String DID, String DoctorName, String  Email,String Specialization, String Password)
+		{
+			String output = "";
+			try
+			{
+				
+				System.out.println(DoctorName + ", " + Email + ", " + Specialization + ", " + Password);
+				Connection con = connect();
+				if (con == null)
+				{
+					return "Error while connecting to the database for updating.";
+				}
+				// create a prepared statement
+				String query = "UPDATE doctordetails SET DoctorName=?,Email=?,Specialization=?,Password=? WHERE DID=?";
+				PreparedStatement preparedStmt = con.prepareStatement(query);
+				// binding values
+				preparedStmt.setString(1, DoctorName);
+				preparedStmt.setString(2, Email);
+				preparedStmt.setString(3, Specialization);
+				preparedStmt.setString(4,Password);
+				preparedStmt.setInt(5, Integer.parseInt(DID));
+				// execute the statement
+				preparedStmt.execute();
+				con.close();
+				String newDocters =readDoctor();
+				output = "{\"status\":\"success\", \"data\": \"" + newDocters + "\"}";
+			}
+			catch (Exception e)
+			{
+				output = "{\"status\":\"error\", \"data\":\"Error while updating the doctor.\"}";
+				System.err.println(e.getMessage());
+			}
+			return output;
+		}
 		 
 }
